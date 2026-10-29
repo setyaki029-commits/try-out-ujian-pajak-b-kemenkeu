@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz UKP Tingkat B – 100 Soal</title>
+<style>
+:root{box-sizing:border-box;--bg:#f6f7f9;--c:#fff;--t:#1c2430;--m:#6b7686;--b:#d8dde5;--p:#1d5fd1;--ok:#17803d;--okb:#e3f5ea;--no:#b42318;--nob:#fdeaea;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161c;--c:#1b222b;--t:#e8ecf2;--m:#98a3b3;--b:#2f3945;--p:#6ea3ff;--ok:#5fd68a;--okb:#16301f;--no:#ff8a80;--nob:#3a1a1a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:16px/1.5 system-ui,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:12px}
+h1{font-size:1.3rem;margin:8px 0}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--c);border:1px solid var(--b);border-radius:10px;padding:8px 12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;z-index:5;font-size:.9rem}
+.pg{flex:1;min-width:100px;height:8px;background:var(--b);border-radius:9px;overflow:hidden}.pg i{display:block;height:100%;background:var(--p);width:0}
+.part{margin:18px 0 6px;color:var(--p);font-weight:700}
+.q{background:var(--c);border:1px solid var(--b);border-radius:10px;padding:12px;margin:10px 0}
+.q p{margin:0 0 8px;font-weight:600}
+.o{display:block;width:100%;text-align:left;background:transparent;color:var(--t);border:1px solid var(--b);border-radius:8px;padding:8px 10px;margin:5px 0;font:inherit;cursor:pointer}
+.o:hover{border-color:var(--p)}.o.s{border-color:var(--p);background:var(--bg)}
+.q.done .o{cursor:default}.o.ok{background:var(--okb);border-color:var(--ok);color:var(--ok)}.o.no{background:var(--nob);border-color:var(--no);color:var(--no)}
+.fb{font-size:.85rem;color:var(--m);margin-top:4px}
+button.a{background:var(--p);color:#fff;border:0;border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer}
+button.g{background:transparent;color:var(--p);border:1px solid var(--p)}
+#res{display:none;background:var(--c);border:2px solid var(--p);border-radius:12px;padding:16px;margin:16px 0;text-align:center}
+#res .n{font-size:2.6rem;font-weight:800}
+.row{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
+</style></head><body><div class="w">
+<h1>Quiz Uji Kompetensi Perpajakan Tingkat B</h1>
+<div class="bar"><span>Terjawab: <b id="ans">0</b>/100</span><span>Benar: <b id="cor">0</b></span><div class="pg"><i id="pb"></i></div></div>
+<div class="row"><label><input type="checkbox" id="imm" checked> Tampilkan benar/salah langsung</label></div>
+<div id="list"></div>
+<div class="row"><button class="a" id="fin">Selesai &amp; Lihat Skor</button><button class="a g" id="rst">Ulangi</button></div>
+<div id="res"></div>
+</div>
+<script>
+const K="BBCBBABBBDDBACABACABCABBCABABDBBACBDACBAABCBAABBAACADBDABBCBDBCCCCABDACBBBCABBCCABBBCBCBBDCBABBAAAAB";
+const P={1:"Part 1: Akuntansi Perpajakan & PPh Badan",26:"Part 2: PPh Potong Pungut & PPh Orang Pribadi",51:"Part 3: PPN, e-Faktur, & Bea Meterai",76:"Part 4: KUP, PPSP, Pengadilan Pajak, & PBB-P5L"};
+const Q=[
+`PT Jaya Sentosa membeli mesin secara tunai seharga Rp100.000.000 (belum termasuk PPN 12%). Sebagai PKP, PPN Masukan tersebut dapat dikreditkan. Bagaimana jurnal pencatatan komersial/pajaknya?|(D) Mesin Rp112.000.000 / (K) Kas Rp112.000.000|(D) Mesin Rp100.000.000, (D) PPN Masukan Rp12.000.000 / (K) Kas Rp112.000.000|(D) Mesin Rp100.000.000, (D) Beban PPN Rp12.000.000 / (K) Kas Rp112.000.000|(D) Mesin Rp100.000.000 / (K) Kas Rp100.000.000`,
+`Manakah pengeluaran perusahaan yang merupakan koreksi fiskal positif?|Biaya listrik dan air kantor|Sanksi administrasi berupa denda pajak|Penyusutan aset tetap sesuai ketentuan fiskal|Pembayaran gaji karyawan`,
+`Pembagian dividen kepada PT B (Badan Dalam Negeri, kepemilikan 20%) berdasarkan UU PPh diperlakukan sebagai...|Objek PPh Pasal 23 sebesar 15%|Objek PPh Final sebesar 10%|Bukan objek pajak / dikecualikan dari objek PPh|Objek PPh Pasal 26`,
+`Kompensasi kerugian fiskal dalam PPh Badan dapat dilakukan selama maksimal...|3 tahun|5 tahun|8 tahun|10 tahun`,
+`Aset Kelompok 1 (masa manfaat 4 tahun) dibeli Mei 2025 dengan harga perolehan Rp40.000.000 (metode garis lurus). Berapakah penyusutan fiskal tahun 2025?|Rp10.000.000|Rp6.666.667|Rp5.000.000|Rp3.333.333`,
+`Fasilitas sewa rumah yang diberikan perusahaan kepada pegawai/direksi berdasarkan aturan natura (PMK 66/2023) pada prinsipnya...|Deductible bagi perusahaan dan objek PPh 21 bagi pegawai|Non-deductible dan bukan objek PPh 21|Seluruhnya dikoreksi negatif|Dikenakan PPN 12%`,
+`Pembentukan cadangan piutang tak tertagih secara fiskal diperbolehkan khusus untuk...|Perusahaan dagang ritel|Bank dan badan usaha penyalur kredit/asuransi|Perusahaan manufaktur skala besar|Seluruh jenis badan usaha`,
+`PT Sumber Arta memiliki peredaran bruto Rp4.000.000.000 dan PKP Rp400.000.000. Dengan fasilitas Pasal 31E UU PPh (tarif efektif 11%), PPh terutangnya adalah...|Rp88.000.000|Rp44.000.000|Rp22.000.000|Rp20.000.000`,
+`Perbedaan perlakuan pengakuan pendapatan/biaya antara standar akuntansi dan perpajakan yang bersifat sementara (timing difference) akan memunculkan...|Koreksi Permanen|Pajak Tangguhan (Deferred Tax)|Sanksi Denda Keterlambatan|Penghasilan Tidak Kena Pajak`,
+`Pembayaran bunga pinjaman oleh perusahaan kepada bank komersial di Indonesia dipotong...|PPh Pasal 23 sebesar 15%|PPh Pasal 23 sebesar 2%|PPh Pasal 4 ayat (2) sebesar 20%|Tidak dipotong PPh Pasal 23 (dikecualikan)`,
+`Hadiah undian yang diterima oleh Wajib Pajak Badan dikenakan PPh Final Pasal 4 ayat (2) sebesar...|10%|15%|20%|25%`,
+`Manakah yang termasuk koreksi fiskal negatif?|Biaya sumbangan yang melebihi batas ketentuan|Penyusutan komersial lebih kecil dibanding penyusutan fiskal|Pencatatan denda pajak dalam laporan laba rugi|Beban penghasilan yang tidak ada hubungannya dengan 3M`,
+`Dasar perhitungan angsuran PPh Pasal 25 tahun berjalan adalah...|PPh Terutang tahun lalu dikurangi kredit pajak tahun lalu|Peredaran bruto bulan lalu dikalikan 0,5%|50% dari laba bersih komersial|Penghasilan Kena Pajak triwulanan`,
+`Pembayaran royalti kepada Wajib Pajak Luar Negeri (tanpa P3B) dikenakan PPh Pasal 26 sebesar...|10%|15%|20%|25%`,
+`Batas maksimum pengkreditan pajak luar negeri (PPh Pasal 24) dihitung menggunakan rumus...|(Penghasilan Luar Negeri / Total PKP) × PPh Terutang|(Penghasilan Luar Negeri / Total Peredaran Bruto) × 22%|50% dari total pajak luar negeri yang dibayar|Total pajak luar negeri dikurangi PTKP`,
+`Kerugian dari kegiatan usaha di luar negeri...|Dapat dikompensasikan dengan penghasilan di dalam negeri|Tidak boleh digabung/dikompensasikan dalam perhitungan PPh di Indonesia|Dapat dibebankan sebagai biaya operasional perusahaan|Menjadi pengurang PPN terutang`,
+`Penyerahan aktiva (yang menurut tujuan semula tidak untuk diperjualbelikan) oleh PKP dikenakan PPN apabila...|Pajak masukan atas perolehan aktiva tersebut semula dapat dikreditkan|Nilai buku aktiva sudah habis|Diserahkan kepada sesama grup perusahaan|Atas persetujuan KPP`,
+`Penilaian persediaan secara akuntansi memperbolehkan metode FIFO dan Average. Secara perpajakan, metode yang diperbolehkan adalah...|Hanya metode FIFO|Hanya metode Average|Metode FIFO atau Average (konsisten)|Metode LIFO saja`,
+`Biaya entertainment dapat dibebankan secara fiskal apabila Wajib Pajak melampirkan...|Daftar nominatif pengeluaran entertainment pada SPT Tahunan|Kwitansi bermeterai dari pihak penerima|Surat izin dari Kementerian Keuangan|Persetujuan dari Dewan Komisaris`,
+`Transaksi sewa guna usaha (leasing) dengan hak opsi (finance lease), perlakuan akuntansi dan perpajakan bagi lessee mengharuskan pengakuan...|Sebagai beban sewa biasa setiap bulan|Sebagai perolehan aset tetap (didepresiasi) dan utang pembiayaan|Sebagai piutang sewa|Sebagai penghasilan tangguhan`,
+`Penghasilan dari pengalihan hak atas tanah dan/atau bangunan bagi perusahaan real estate dikenakan PPh Final sebesar...|0,5%|2,5%|10%|20%`,
+`Transaksi penjualan saham di bursa efek oleh pendiri dikenakan tambahan PPh Final sebesar...|0,1%|0,5%|5%|25%`,
+`Bantuan atau sumbangan (termasuk zakat melalui badan resmi) dapat dikurangkan dari penghasilan bruto dengan syarat utama...|Diberikan kepada keluarga terdekat|Didukung bukti sah dan memenuhi ketentuan peraturan perundang-undangan|Tidak melebihi 10% dari omset bulanan|Disetujui oleh RUPS`,
+`PT Makmur membukukan rugi fiskal tahun 2024 sebesar Rp100.000.000. Pada tahun 2025 memperoleh laba fiskal Rp40.000.000. Sisa kerugian yang dapat dikompensasi ke tahun berikutnya adalah...|Rp100.000.000|Rp60.000.000|Rp40.000.000|Rp0 (sudah hangus)`,
+`PPh Badan terutang bagi Wajib Pajak Badan Dalam Negeri berbentuk Perseroan Terbatas dengan peredaran bruto di atas Rp50 miliar dikenakan tarif tunggal sebesar...|11%|20%|22%|25%`,
+`Penerapan Tarif Efektif Rata-rata (TER) bulanan PPh Pasal 21 kategori A, B, atau C digunakan untuk masa pajak...|Januari s.d. November|Desember saja|Setiap bulan termasuk Desember|Triwulanan`,
+`Penghitungan PPh Pasal 21 pegawai tetap pada Masa Pajak Desember menggunakan...|Tarif TER Bulanan|Tarif Pasal 17 UU PPh atas PKP setahun dikurangi potongan Jan-Nov|Tarif Flat 5%|Tarif Tetap 20%`,
+`Jasa teknik, manajemen, dan konsultan yang diberikan oleh badan usaha dalam negeri dipotong PPh Pasal 23 sebesar...|2% dari jumlah bruto|15% dari jumlah bruto|10% dari jumlah bruto|0,5% dari jumlah bruto`,
+`PPh Pasal 22 atas impor barang yang menggunakan Angka Pengenal Impor (API) ditetapkan sebesar...|0,5%|2,5%|7,5%|10%`,
+`Tarif PPh Final atas bunga deposito dan tabungan yang ditempatkan di bank adalah...|5%|10%|15%|20%`,
+`Wajib Pajak Orang Pribadi UMKM dengan omset di bawah Rp500 juta dalam setahun...|Wajib menyetor PPh Final 0,5% sejak rupiah pertama|Tidak dikenai PPh Final atas omset sampai dengan Rp500 juta tersebut|Harus langsung beralih ke pembukuan umum|Dikenakan tarif progresif Pasal 17`,
+`Berapakah PTKP untuk Wajib Pajak status K/1 (Kawin, tanggungan 1 anak)?|Rp54.000.000|Rp58.500.000|Rp63.000.000|Rp67.500.000`,
+`Batas waktu pemberitahuan penggunaan Norma Penghitungan Penghasilan Neto (NPPN) bagi Wajib Pajak Orang Pribadi yang menyelenggarakan pencatatan adalah...|3 bulan pertama dari tahun pajak yang bersangkutan|Akhir tahun pajak|Saat pelaporan SPT Tahunan|Selambat-lambatnya 30 hari setelah dikukuhkan`,
+`Formulir bukti pemotongan unifikasi (e-Bupot Unifikasi) mencakup jenis-jenis pajak berikut, kecuali...|PPh Pasal 23|PPh Pasal 4 ayat (2)|PPh Pasal 21 Pegawai Tetap|PPh Pasal 15`,
+`Apabila suami istri hidup berpisah berdasarkan putusan hakim (HB), kewajiban perpajakan mereka...|Digabung menjadi satu kesatuan|Dihitung secara terpisah (split) masing-masing memiliki NPWP sendiri|Isteri tidak wajib memiliki NPWP|Ditanggung sepenuhnya oleh suami`,
+`Honorarium yang diterima oleh PNS golongan III dari beban APBN atas kegiatan seminar dibebani PPh Pasal 21 final sebesar...|0%|5%|15%|Tidak dipotong pajak`,
+`Pengusaha yang melakukan transaksi pengalihan hak atas tanah dan bangunan wajib melunasi PPh Final sebelum...|Akta penandatanganan oleh PPAT dilakukan|SPT Masa PPh disampaikan|Akhir tahun pajak|Proses pemeriksaan pajak`,
+`PPh Pasal 22 atas penjualan hasil produksi kepada distributor di dalam negeri oleh industri semen ditetapkan sebesar...|0,1%|0,25%|0,45%|1,5%`,
+`Apabila penerima penghasilan yang dipotong PPh Pasal 23 tidak memiliki NPWP, maka tarif pemotongan pajak akan...|Menjadi 0%|Menjadi dua kali lipat lebih tinggi (100% lebih tinggi)|Ditambah denda administrasi 2% per bulan|Dikecualikan dari pemotongan`,
+`Penghasilan dari pengalihan hak atas tanah dan bangunan yang diterima oleh orang pribadi yang penghasilannya di bawah PTKP dan menjual rumah sederhana...|Dikecualikan dari pengenaan PPh Final (syarat tertentu)|Dikenakan tarif 5%|Dikenakan tarif progresif Pasal 17|Bebas pajak tanpa syarat`,
+`Jasa katering (catering) yang diselenggarakan untuk suatu event dikenakan PPh Pasal 23 dengan tarif...|2% dari jumlah bruto|Tidak dipotong PPh 23 karena merupakan objek PPh Pasal 4 ayat (2) final|15% dari jumlah bruto|Dipungut PPN saja`,
+`Pembayaran premi asuransi yang dibayar perusahaan untuk karyawannya...|Selalu menjadi objek PPh Pasal 21 bagi karyawan|Diperhitungkan sebagai penghasilan pegawai jika dibayar oleh pemberi kerja (syarat tertentu)|Merupakan biaya yang tidak boleh dikurangkan (non-deductible)|Bebas pajak sepenuhnya`,
+`PPh Pasal 21 atas pesangon yang dibayarkan sekaligus pada saat pegawai berhenti bekerja dikenakan tarif bersifat final untuk jumlah sampai dengan...|Rp50.000.000|Rp100.000.000|Rp200.000.000|Rp500.000.000`,
+`Tarif tertinggi pajak penghasilan Wajib Pajak Orang Pribadi dalam lapis tarif Pasal 17 UU PPh/HPP adalah...|30%|35%|40%|45%`,
+`Penghitungan PPh Pasal 21 bagi Tenaga Ahli (konsultan, pengacara, akuntan) yang memberikan jasa secara mandiri didasarkan pada...|50% dari penghasilan bruto|Penghasilan Kena Pajak dihitung dari 50% penghasilan bruto dikurangi PTKP|Tarif TER bulanan|Gaji tetap setiap bulan`,
+`Wajib Pajak Orang Pribadi yang menjalankan usaha dengan omset di bawah Rp500 juta setahun dan memilih menggunakan PP 55/2022, pelaporan pajaknya dilakukan melalui...|SPT Tahunan PPh Orang Pribadi dengan melampirkan daftar peredaran bruto|Hanya menyetor tanpa lapor SPT|SPT Masa PPh Final setiap bulan|SPT PPh Badan`,
+`Dividen yang diterima oleh Wajib Pajak Orang Pribadi dalam negeri...|Merupakan objek pajak dengan tarif final 10%|Bukan objek pajak sepanjang diinvestasikan di wilayah Indonesia dalam jangka waktu tertentu|Dikenakan tarif progresif Pasal 17 tanpa pengecualian|Bebas pajak mutlak tanpa syarat investasi`,
+`Natura berupa makanan/minuman yang disediakan bagi seluruh pegawai di tempat kerja berdasarkan PMK 66/2023 perlakuan pajaknya adalah...|Merupakan objek PPh 21 bagi pegawai|Bukan objek PPh 21 dan deductible bagi pemberi kerja|Harus dikoreksi fiskal positif|Dikenakan PPN 12%`,
+`Pemotongan PPh Pasal 21 atas honorarium atau imbalan yang bersifat tidak tetap kepada Pegawai Tidak Tetap dihitung berdasarkan...|Tarif TER harian|Tarif Pasal 17 langsung dari penghasilan bruto|Dikurangi PTKP sehari lalu dikali 5%|Tarif tetap 15%`,
+`Batas waktu penyetoran PPh Pasal 21 yang dipotong oleh pemotong pajak adalah paling lambat...|Tanggal 10 bulan berikutnya|Tanggal 15 bulan berikutnya|Akhir bulan berikutnya|Bersamaan dengan penyampaian SPT Masa`,
+`Berdasarkan UU HPP dan ketentuan yang berlaku, tarif standar PPN adalah...|10%|11%|12%|15%`,
+`Faktur Pajak elektronik (e-Faktur) wajib dibuat oleh PKP pada saat...|Penyerahan BKP/JKP atau saat pembayaran (mana yang lebih dulu)|Akhir bulan penyerahan|Saat penerbitan laporan keuangan|Saat audit pajak dimulai`,
+`Kode nomor seri Faktur Pajak untuk penyerahan BKP kepada pemungut PPN selain bendahara pemerintah (misal: Kontraktor Kontrak Kerja Sama) adalah...|010|020|030|070`,
+`Faktur pajak yang cacat, tidak lengkap, atau tidak diunggah tepat waktu dikategorikan sebagai...|Faktur Pajak Batal|Faktur Pajak Tidak Sah / Tidak Menerbitkan Faktur Pajak|Faktur Pajak Pengganti|Faktur Pajak Digabung`,
+`Pengkreditan Pajak Masukan menggunakan prinsip pengkreditan...|Cash basis|Accrual basis|Retail inventory method|Direct attribution`,
+`Penyerahan Jasa Kena Pajak di dalam Daerah Pabean oleh PKP dikenakan PPN sebesar...|0% atau 12%|Selalu 0%|5% final|10% tetap`,
+`Batas waktu pelaporan/penyampaian SPT Masa PPN adalah...|Tanggal 15 bulan berikutnya|Akhir bulan berikutnya setelah Masa Pajak berakhir|20 hari setelah akhir bulan|3 bulan setelah akhir tahun pajak`,
+`PPN atas kegiatan membangun sendiri (KMS) dikenakan apabila luas bangunan yang dibangun sekurang-kurangnya...|100 meter persegi|200 meter persegi|400 meter persegi|500 meter persegi`,
+`Besaran tertentu PPN untuk kegiatan membangun sendiri (KMS) adalah...|1,1% dari jumlah biaya yang dikeluarkan|2,2% dari jumlah biaya yang dikeluarkan|2,4% dari jumlah biaya yang dikeluarkan (20% × 12%)|12% penuh dari RAB`,
+`Pajak Masukan atas perolehan BKP/JKP yang tidak mempunyai hubungan langsung dengan kegiatan usaha...|Dapat dikreditkan sepenuhnya|Tidak dapat dikreditkan (non-creditable)|Dapat dibiayakan dalam PPh Badan|Diminta restitusi langsung`,
+`Ekspor Barang Kena Pajak Berwujud oleh PKP dikenakan PPN dengan tarif...|12%|11%|5%|0%`,
+`Dokumen tertentu yang kedudukannya dipersamakan dengan Faktur Pajak antara lain...|Kwitansi internal perusahaan|Ticket pesawat udara, Nota Penjualan Eceran, dan PIB|Surat Perintah Kerja (SPK)|Berita Acara Serah Terima (BAST)`,
+`Batas peredaran bruto bagi pengusaha kecil yang wajib dikukuhkan sebagai Pengusaha Kena Pajak (PKP) adalah...|Rp600 juta dalam 1 tahun|Rp1 miliar dalam 1 tahun|Rp4,8 miliar dalam 1 tahun|Rp50 miliar dalam 1 tahun`,
+`Bea Meterai dikenakan dengan tarif tetap sebesar...|Rp3.000|Rp6.000|Rp10.000|Rp25.000`,
+`Dokumen yang memuat jumlah uang dengan nilai nominal lebih dari berapa yang dikenakan Bea Meterai?|Rp1.000.000|Rp2.500.000|Rp5.000.000|Rp10.000.000`,
+`Manakah dokumen yang tidak dikenai Bea Meterai?|Surat Perjanjian Kerjasama Bisnis|Akta Notaris|Tanda terima gaji / slip gaji|Surat berharga seperti wesel dan promes`,
+`Pelunasan Bea Meterai dapat dilakukan dengan menggunakan...|Meterai tempel, meterai elektronik, dan mesin teraan meterai digital|Hanya meterai tempel fisik|Transfer bank ke kas negara tanpa tanda meterai|Pembayaran bersamaan PPh Pasal 23`,
+`Apabila dokumen tidak dibubuhi meterai yang cukup saat akan digunakan di pengadilan, maka dilakukan...|Pembatalan dokumen|Pemeteraian Kemudian di Kantor Pos|Denda 500% tanpa meterai|Penggantian dokumen baru`,
+`PPN atas penyerahan kendaraan bermotor bekas oleh pengusaha bukan PKP diatur dengan...|Besaran tertentu (Nilai Lain)|Pembebasan PPN|Tarif umum 12% dari harga pasar|Tidak terutang PPN`,
+`Jika dalam suatu masa pajak Pajak Masukan lebih besar daripada Pajak Keluaran, maka kelebihan tersebut dapat...|Diminta pengembalian (restitusi) pada akhir tahun atau dikompensasikan ke masa pajak berikutnya|Hangus otomatis|Dialihkan ke PPh Badan|Dibagikan sebagai dividen`,
+`Pengusaha Kena Pajak yang gagal menerbitkan e-Faktur tepat waktu dapat dikenakan sanksi administrasi berupa denda sebesar...|1% dari Dasar Pengenaan Pajak (DPP)|2% dari DPP|2% dari jumlah PPN yang tidak/kurang bayar|Rp1.000.000 per faktur`,
+`Dokumen penyerahan jasa perbankan dan keuangan tertentu dikecualikan dari pengenaan...|PPh Pasal 23|PPN|Bea Meterai|PPh Final`,
+`Faktur Pajak Pengganti diterbitkan apabila terjadi...|Pembatalan transaksi sepenuhnya|Kesalahan pengisian data dalam Faktur Pajak semula selain kode transaksi|Keterlambatan pembayaran oleh pembeli|Perubahan tarif PPN oleh pemerintah`,
+`Pengukuhan PKP secara jabatan dapat dilakukan oleh Direktorat Jenderal Pajak apabila...|PKP lalai menyampaikan SPT Masa|Pengusaha memenuhi syarat omset di atas batasan PKP namun tidak mendaftarkan diri|PKP pindah alamat domisili|Permintaan direksi perusahaan`,
+`Saat penyetoran PPN kurang bayar (Pajak Keluaran > Pajak Masukan) untuk suatu Masa Pajak paling lambat dilakukan pada...|Akhir bulan Masa Pajak bersangkutan|Tanggal penyampaian SPT Masa PPN|Tanggal 15 bulan berikutnya setelah Masa Pajak berakhir|30 hari setelah akhir tahun pajak`,
+`Surat Tagihan Pajak (STP) mempunyai kekuatan hukum yang sama persis dengan...|Surat Ketetapan Pajak Kurang Bayar (SKPKB) untuk dapat dilakukan penagihan seketika/penagihan aktif|Putusan Pengadilan Negeri|Bukti permulaan tindak pidana|SPT Tahunan`,
+`Sanksi administrasi keterlambatan pembayaran pajak setelah tanggal jatuh tempo adalah...|2% per bulan|Bunga sanksi administrasi dihitung berdasarkan suku bunga acuan ditambah uplift factor per bulan|100% dari pokok pajak|Denda tetap Rp1.000.000`,
+`Jangka waktu pengajuan permohonan keberatan atas suatu SKPKB adalah...|1 bulan sejak tanggal surat|3 bulan sejak tanggal dikirim/disampaikan SKPKB|6 bulan sejak tanggal diterbitkan|12 bulan sejak diterima`,
+`Dirjen Pajak wajib memberikan keputusan atas permohonan keberatan Wajib Pajak dalam jangka waktu paling lama...|3 bulan|6 bulan|12 bulan|24 bulan`,
+`Jika keberatan Wajib Pajak ditolak dan WP tidak mengajukan banding, maka denda sanksi administrasi yang dikenakan adalah...|30%|50%|60%|100%`,
+`Surat Paksa diterbitkan apabila utang pajak tidak dilunasi dalam jangka waktu... sejak Surat Teguran disampaikan.|7 hari|14 hari|21 hari|30 hari`,
+`Penyitaan barang penanggung pajak dapat dilaksanakan oleh Jurusita Pajak setelah lewat waktu... sejak Surat Paksa diberitahukan.|1×24 jam|2×24 jam|7 hari|14 hari`,
+`Jangka waktu pengajuan permohonan Banding ke Pengadilan Pajak atas Keputusan Keberatan adalah...|1 bulan|3 bulan sejak tanggal diterima keputusan keberatan|6 bulan|12 bulan`,
+`Upaya hukum luar biasa terhadap putusan Pengadilan Pajak diajukan ke Mahkamah Agung berupa...|Kasasi|Peninjauan Kembali (PK)|Gugatan perdata|Keberatan istimewa`,
+`Daluwarsa penetapan pajak (penerbitan SKPKB) dalam kondisi normal adalah...|2 tahun|3 tahun|5 tahun sejak saat terutangnya pajak|10 tahun`,
+`Wajib Pajak yang melakukan tindak pidana perpajakan dengan sengaja tidak menyetor pajak yang telah dipotong dapat dituntut dengan daluwarsa pidana selama...|5 tahun|10 tahun|15 tahun|Seumur hidup`,
+`Pengungkapan ketidakbenaran perbuatan selama pemeriksaan bukti permulaan sebelum penyelidikan ditingkatkan ke penyidikan mengharuskan pembayaran pajak ditambah sanksi denda...|50%|100%|200%|300%`,
+`Sektor PBB yang pengelolaannya dilakukan oleh Direktorat Jenderal Pajak (Pemerintah Pusat) adalah...|PBB Perkotaan dan Pedesaan (P2)|PBB Sektor Perkebunan, Perhutanan, Pertambangan, dan Lainnya (P5L)|PBB Perumahan Mewah|PBB Fasilitas Umum`,
+`Surat Pemberitahuan Objek Pajak (SPOP) PBB-P5L harus dikembalikan kepada Ditjen Pajak dalam waktu selambat-lambatnya...|14 hari|30 hari sejak diterima oleh subjek pajak|3 bulan|6 bulan`,
+`Besarnya persentase Nilai Jual Kena Pajak (NJKP) untuk PBB Sektor P5L adalah...|20% dari NJOP|40% dari NJOP|50% dari NJOP|100% dari NJOP (setelah dikurangi NJOPTKP jika ada)`,
+`Batas waktu pelunasan PBB Sektor P5L yang tercantum dalam SPPT adalah paling lama...|1 bulan sejak tanggal diterima|3 bulan sejak tanggal diterima|6 bulan sejak tanggal diterimanya SPPT|Akhir tahun kalender`,
+`Pengembalian kelebihan pembayaran pajak (restitusi) yang seharusnya tidak terutang diproses melalui penelitian atau pemeriksaan, dengan batas waktu pengembalian kelebihan pembayaran paling lambat...|1 bulan|3 bulan sejak permohonan diterima|6 bulan|12 bulan`,
+`Apabila Wajib Pajak membetulkan SPT Tahunan sendiri yang mengakibatkan pajak kurang bayar, sanksi bunga per bulan dihitung berdasarkan...|Suku bunga acuan ditambah faktor per bulan atas jumlah pajak yang kurang bayar|2% flat per bulan|50% dari pokok pajak|Tanpa sanksi bunga`,
+`Pengajuan permohonan angsuran atau penundaan pembayaran pajak dapat diberikan oleh Ditjen Pajak paling lama...|3 bulan|6 bulan atau 12 bulan (syarat tertentu)|2 tahun|5 tahun`,
+`Surat Ketetapan Pajak Kurang Bayar Tambahan (SKPKBT) dapat diterbitkan apabila ditemukan data baru (novum) dalam jangka waktu...|2 tahun sejak diterbitkannya SKP semula|5 tahun sesudah saat terutangnya pajak|10 tahun|Selama belum di-audit ulang`,
+`Gugatan Wajib Pajak ke Pengadilan Pajak dapat diajukan terhadap...|Keputusan penolakan pengurangan sanksi administrasi atau pelaksanaan penagihan pajak dengan surat paksa|Surat Ketetapan Pajak Kurang Bayar (SKPKB) murni|Hasil pemeriksaan pajak biasa|Surat Teguran awal`,
+`Hak mendahulu untuk penagihan pajak meliputi pokok pajak, sanksi administrasi, dan...|Biaya penagihan pajak|Biaya pengacara WP|Denda pengadilan umum|Biaya sewa jurusita`,
+`Pihak yang berwenang melaksanakan penyanderaan (gijzeling) terhadap penanggung pajak yang mempunyai utang pajak minimal Rp100 juta dan diragukan iktikad baiknya adalah...|Menteri Keuangan / Gubernur atas izin pengadilan|Kepala KPP setempat tanpa izin|Kepolisian Republik Indonesia|Hakim Pengadilan Negeri`,
+`Wajib Pajak yang dinyatakan pailit, maka pengurusan utang pajaknya didahulukan melalui...|Kurator kepailitan dengan hak mendahulu negara|Lelang langsung oleh wajib pajak|Pembagian harta warisan|Pengadilan Niaga tanpa prioritas pajak`,
+`Dalam sistem administrasi perpajakan berbasis teknologi Coretax (Coretax Administration System), seluruh proses pelayanan dan pelaporan Wajib Pajak diintegrasikan secara...|Manual via pos tercatat|Terpusat dan terdigitalisasi secara elektronik (single source of truth)|Terpisah per KPP daerah|Menggunakan faksimili resmi`
+];
+const L="ABCD";let U=new Array(100).fill(-1),fin=false;
+const $=i=>document.getElementById(i);
+function build(){const h=[];Q.forEach((s,i)=>{const p=s.split("|");if(P[i+1])h.push(`<div class="part">${P[i+1]}</div>`);
+h.push(`<div class="q" id="q${i}"><p>${i+1}. ${p[0]}</p>${p.slice(1).map((o,j)=>`<button class="o" data-i="${i}" data-j="${j}"><b>${L[j]}.</b> ${o}</button>`).join("")}<div class="fb"></div></div>`)});
+$("list").innerHTML=h.join("")}
+function mark(i,reveal){const q=$("q"+i),k=L.indexOf(K[i]);q.querySelectorAll(".o").forEach((b,j)=>{b.classList.remove("s","ok","no");if(reveal){if(j===k)b.classList.add("ok");else if(j===U[i])b.classList.add("no")}else if(j===U[i])b.classList.add("s")});
+q.classList.toggle("done",reveal);q.querySelector(".fb").textContent=reveal?(U[i]===k?"✓ Benar":(U[i]<0?"Tidak dijawab. ":"✗ Salah. ")+"Kunci: "+K[i]):""}
+function stat(){const a=U.filter(x=>x>=0).length,c=U.filter((x,i)=>x===L.indexOf(K[i])).length;$("ans").textContent=a;$("cor").textContent=c;$("pb").style.width=a+"%";return[a,c]}
+$("list").addEventListener("click",e=>{const b=e.target.closest(".o");if(!b||fin)return;const i=+b.dataset.i,j=+b.dataset.j;
+if($("imm").checked&&U[i]>=0)return;U[i]=j;mark(i,$("imm").checked);stat()});
+$("fin").onclick=()=>{fin=true;const[a,c]=stat(),s=c,w=a-c,k=100-a;for(let i=0;i<100;i++)mark(i,true);
+const g=s>=80?"Sangat baik 🎉":s>=70?"Baik":s>=60?"Cukup – perlu belajar lagi":"Perlu belajar lebih banyak";
+const r=$("res");r.style.display="block";r.innerHTML=`<div>Skor Akhir</div><div class="n">${s}/100</div><div>Nilai: <b>${s}</b> · ${g}</div><p>Benar: <b>${c}</b> · Salah: <b>${w}</b> · Tidak dijawab: <b>${k}</b></p>`;r.scrollIntoView({behavior:"smooth"})};
+$("rst").onclick=()=>{U.fill(-1);fin=false;$("res").style.display="none";for(let i=0;i<100;i++)mark(i,false);stat();scrollTo(0,0)};
+build();stat();
+</script></body></html>
